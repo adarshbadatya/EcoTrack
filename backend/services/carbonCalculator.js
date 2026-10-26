@@ -39,7 +39,7 @@ function calculateCarbon(type, activity, quantity) {
 
   const factor = category[key];
 
-  if (!factor) {
+  if (factor=== undefined) {
     throw new Error(`No emission factor found for ${activity}`);
   }
 

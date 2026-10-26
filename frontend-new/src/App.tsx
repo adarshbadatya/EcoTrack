@@ -35,13 +35,13 @@ function App() {
   };
 
   const activityOptions: Record<string, string[]> = {
-    transport: ["bike", "car", "bus", "train"],
-    electricity: ["kwh"],
-    food: ["veg", "nonveg"],
-    travel: ["flight"],
-    shopping: ["product"],
-    waste: ["kg"],
-  };
+  transport: ["bike", "car", "bus", "train"],
+  electricity: ["kwh"],
+  food: ["veg", "nonveg"],
+  travel: ["flight"],
+  shopping: ["product"],
+  waste: ["kg"],
+};
   const filteredActivities = activities.filter((item) => {
   const activityDate = new Date(item.date);
   const now = new Date();
@@ -120,9 +120,12 @@ const sortedActivities = [...filteredActivities].sort(
 }));
 
   const ecoScore = Math.max(
-    0,
-    Math.round(100 - totalCarbon * 10)
-  );
+  0,
+  Math.min(
+    100,
+    Math.round(100 * Math.exp(-totalCarbon / 50))
+  )
+);
   const highestCategory = [...categoryData].sort(
   (a, b) => b.emissions - a.emissions
 )[0];
@@ -311,7 +314,7 @@ const smartInsight =
           <div className="card">
             <span>📊</span>
             <p>Total Activities</p>
-            <h2>{activities.length}</h2>
+            <h2>{filteredActivities.length}</h2>
             <small>Recorded activities</small>
           </div>
 
@@ -602,11 +605,18 @@ const smartInsight =
                   <option
                     key={option}
                     value={option}
-                  >
-                    {option
-                      .charAt(0)
-                      .toUpperCase() +
-                      option.slice(1)}
+                  >{({
+  bike: "Bike",
+  car: "Car",
+  bus: "Bus",
+  train: "Train",
+  electricity: "Electricity",
+  veg: "Vegetarian Food",
+  nonveg: "Non-Vegetarian Food",
+  flight: "Flight",
+  product: "Shopping Item",
+  waste: "Waste",
+} as Record<string, string>)[option] || option}
                   </option>
                 )
               )}
@@ -647,7 +657,17 @@ const smartInsight =
               }}
             >
               <option value={unit}>
-                {unit}
+                {unit === "kWh"
+  ? "kWh (Kilowatt-hour)"
+  : unit === "km"
+  ? "km (Kilometres)"
+  : unit === "serving"
+  ? "serving"
+  : unit === "item"
+  ? "item"
+  : unit === "Kg"
+  ? "kg (Kilograms)"
+  : unit}
               </option>
             </select>
 
